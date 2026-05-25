@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turbo Lane - Extreme 3D-Steered Arcade Racer</title>
+    <!-- Modern Typography: Orbitron for Arcade numbers/headers, Inter for UI text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <!-- Logo and Slogan Header -->
+        <header class="game-header">
+            <h1 class="logo-text">TURBO <span class="accent-text">LANE</span></h1>
+            <p class="tagline">Avoid the traffic, accelerate, survive!</p>
+        </header>
+
+        <!-- Main Game Container -->
+        <div class="game-container" id="gameContainer">
+            
+            <!-- Canvas for Game World -->
+            <canvas id="gameCanvas" width="480" height="720"></canvas>
+
+            <!-- HUD Overlay (Overlay during gameplay) -->
+            <div id="gameHud" class="hud-overlay hidden">
+                <div class="hud-section score-section">
+                    <span class="hud-label">SCORE</span>
+                    <span id="hudScore" class="hud-value font-arcade">00000</span>
+                </div>
+                <div class="hud-section speed-section">
+                    <span class="hud-label">SPEED</span>
+                    <span id="hudSpeed" class="hud-value font-arcade">80<span class="unit">KM/H</span></span>
+                </div>
+                <div class="hud-section highscore-section">
+                    <span class="hud-label">BEST</span>
+                    <span id="hudHighScore" class="hud-value font-arcade">00000</span>
+                </div>
+            </div>
+
+            <!-- Start Game Overlay -->
+            <div id="startScreen" class="screen-overlay">
+                <div class="glass-panel">
+                    <h2 class="panel-title pulsing">READY TO RACE?</h2>
+                    
+                    <div class="instructions">
+                        <div class="instruction-item">
+                            <span class="control-key">←</span>
+                            <span class="control-key">→</span>
+                            <span class="instruction-text">Steer left & right to change lanes</span>
+                        </div>
+                        <div class="instruction-item">
+                            <span class="badge difficulty-badge">Auto-Accelerate</span>
+                            <span class="instruction-text">Game speeds up every 5 seconds!</span>
+                        </div>
+                        <div class="instruction-item">
+                            <span class="badge pass-badge">+10 PTS</span>
+                            <span class="instruction-text">Pass enemy traffic to score</span>
+                        </div>
+                    </div>
+
+                    <button id="startButton" class="btn btn-primary btn-glow">
+                        <span class="btn-text">START ENGINE</span>
+                        <span class="btn-shimmer"></span>
+                    </button>
+                    
+                    <div class="sound-toggle-wrapper">
+                        <button id="soundToggle" class="sound-btn">
+                            <span class="sound-icon">🔊</span> Sound On
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Over Overlay -->
+            <div id="gameOverScreen" class="screen-overlay hidden">
+                <div class="glass-panel panel-gameover">
+                    <div class="crash-icon-wrapper">💥</div>
+                    <h2 class="panel-title gameover-title">CRASHED!</h2>
+                    
+                    <div class="results-container">
+                        <div class="result-row">
+                            <span class="result-label">FINAL SCORE</span>
+                            <span id="finalScore" class="result-value font-arcade text-cyan">0</span>
+                        </div>
+                        <div class="result-row new-highscore-row hidden" id="newHighScoreRow">
+                            <span class="new-badge">NEW HIGHSCORE!</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">PERSONAL BEST</span>
+                            <span id="bestScore" class="result-value font-arcade text-yellow">0</span>
+                        </div>
+                    </div>
+
+                    <button id="restartButton" class="btn btn-success btn-glow">
+                        <span class="btn-text">RACE AGAIN</span>
+                        <span class="btn-shimmer"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Swipe/Steer Mobile Tap Zones for Accessibility -->
+            <div class="tap-zones">
+                <div id="tapLeft" class="tap-zone" title="Tap to steer left"></div>
+                <div id="tapRight" class="tap-zone" title="Tap to steer right"></div>
+            </div>
+        </div>
+
+        <!-- Footer / Instructions -->
+        <footer class="game-footer">
+            <p>Use Keyboard <strong>Left/Right Arrow Keys</strong> (or <strong>A/D</strong>) to steer.</p>
+            <p class="mobile-note">On mobile/tablet, tap the left or right side of the screen to steer!</p>
+        </footer>
+    </div>
+
+    <!-- Core Game Logic -->
+    <script src="game.js"></script>
+</body>
+</html>
