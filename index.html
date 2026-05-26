@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turbo Lane - Extreme 3D-Steered Arcade Racer</title>
+    <!-- Modern Typography: Orbitron for Arcade numbers/headers, Inter for UI text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <!-- Logo and Slogan Header -->
+        <header class="game-header">
+            <h1 class="logo-text">TURBO <span class="accent-text">LANE</span></h1>
+            <p class="tagline">Avoid the traffic, accelerate, survive!</p>
+        </header>
+
+        <!-- Main Game Container -->
+        <div class="game-container" id="gameContainer">
+            
+            <!-- Canvas for Game World -->
+            <canvas id="gameCanvas" width="480" height="720"></canvas>
+
+            <!-- HUD Overlay (Overlay during gameplay) -->
+            <div id="gameHud" class="hud-overlay hidden">
+                <!-- P1 HUD Column -->
+                <div class="hud-section score-section p1-hud">
+                    <span id="p1HudLabel" class="hud-label">P1 SCORE</span>
+                    <span id="hudP1Score" class="hud-value font-arcade text-green">00000</span>
+                </div>
+                
+                <!-- Speed/Center Column -->
+                <div class="hud-section speed-section">
+                    <span class="hud-label">SPEED</span>
+                    <span id="hudSpeed" class="hud-value font-arcade">80<span class="unit">KM/H</span></span>
+                </div>
+
+                <!-- P2 HUD Column (Dynamic: shows score in 2P, shows BEST in 1P) -->
+                <div class="hud-section highscore-section p2-hud">
+                    <span id="p2HudLabel" class="hud-label">BEST</span>
+                    <span id="hudP2Score" class="hud-value font-arcade text-yellow">00000</span>
+                </div>
+            </div>
+
+            <!-- Start Game Overlay -->
+            <div id="startScreen" class="screen-overlay">
+                <div class="glass-panel">
+                    <h2 class="panel-title pulsing">READY TO RACE?</h2>
+                    
+                    <div class="instructions">
+                        <div class="instruction-item split-instructions">
+                            <div class="player-instruction">
+                                <span class="badge p1-badge">P1</span>
+                                <span class="control-key">A</span>
+                                <span class="control-key">D</span>
+                            </div>
+                            <div class="player-instruction">
+                                <span class="badge p2-badge">P2</span>
+                                <span class="control-key">←</span>
+                                <span class="control-key">→</span>
+                            </div>
+                        </div>
+                        <div class="instruction-item">
+                            <span class="badge difficulty-badge">Auto-Accelerate</span>
+                            <span class="instruction-text">Game speeds up every 5 seconds!</span>
+                        </div>
+                        <div class="instruction-item">
+                            <span class="badge pass-badge">Bumper Conflict</span>
+                            <span class="instruction-text">Cars bounce off each other in the same lane!</span>
+                        </div>
+                    </div>
+
+                    <div class="mode-select-wrapper">
+                        <button id="start1Player" class="btn btn-primary btn-glow">
+                            <span class="btn-text">1 PLAYER MODE</span>
+                            <span class="btn-shimmer"></span>
+                        </button>
+                        <button id="start2Player" class="btn btn-secondary btn-glow" style="margin-top: 14px;">
+                            <span class="btn-text">2 PLAYERS CO-OP</span>
+                            <span class="btn-shimmer"></span>
+                        </button>
+                    </div>
+                    
+                    <div class="sound-toggle-wrapper">
+                        <button id="soundToggle" class="sound-btn">
+                            <span class="sound-icon">🔊</span> Sound On
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Over Overlay -->
+            <div id="gameOverScreen" class="screen-overlay hidden">
+                <div class="glass-panel panel-gameover">
+                    <div class="crash-icon-wrapper">💥</div>
+                    <h2 class="panel-title gameover-title">CRASHED!</h2>
+                    
+                    <div id="resultsContainer" class="results-container">
+                        <!-- 1 Player Result (Shown in 1P mode) -->
+                        <div id="singlePlayerResults" class="results-sub-container">
+                            <div class="result-row">
+                                <span class="result-label">FINAL SCORE</span>
+                                <span id="finalScore" class="result-value font-arcade text-cyan">0</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">PERSONAL BEST</span>
+                                <span id="bestScore" class="result-value font-arcade text-yellow">0</span>
+                            </div>
+                        </div>
+
+                        <!-- 2 Player Result (Shown in 2P mode) -->
+                        <div id="multiPlayerResults" class="results-sub-container hidden">
+                            <div class="winner-banner" id="winnerBanner">PLAYER 1 SURVIVED!</div>
+                            <div class="result-row">
+                                <span class="result-label text-green-label">P1 SCORE</span>
+                                <span id="p1FinalScore" class="result-value font-arcade text-green">0</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label text-cyan-label">P2 SCORE</span>
+                                <span id="p2FinalScore" class="result-value font-arcade text-cyan">0</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">CO-OP BEST</span>
+                                <span id="coopBestScore" class="result-value font-arcade text-yellow">0</span>
+                            </div>
+                        </div>
+
+                        <div class="result-row new-highscore-row hidden" id="newHighScoreRow">
+                            <span class="new-badge">NEW HIGHSCORE!</span>
+                        </div>
+                    </div>
+
+                    <button id="restartButton" class="btn btn-success btn-glow">
+                        <span class="btn-text">PLAY AGAIN</span>
+                        <span class="btn-shimmer"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Swipe/Steer Mobile Tap Zones for Accessibility -->
+            <div class="tap-zones">
+                <div id="tapLeft" class="tap-zone" title="Tap P1 Left / P2 Left"></div>
+                <div id="tapRight" class="tap-zone" title="Tap P1 Right / P2 Right"></div>
+            </div>
+        </div>
+
+        <!-- Footer / Instructions -->
+        <footer class="game-footer">
+            <p>P1: <strong>A / D</strong> | P2: <strong>Left / Right Arrows</strong></p>
+            <p class="mobile-note">Mobile tap zones steer P1 (left half) and P2 (right half)!</p>
+        </footer>
+    </div>
+
+    <!-- Core Game Logic -->
+    <script src="game.js"></script>
+</body>
+</html>
